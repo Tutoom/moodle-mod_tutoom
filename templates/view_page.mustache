@@ -1,0 +1,77 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_tutoom/view_page
+
+    This template renders the /view.php page.
+
+    Example context (json):
+    {
+        "error": true,
+        "errorcode": 500,
+        "errormessage":"",
+        "baseurl": "",
+        "id": 1
+        "ismoderator": true,
+        "meetingid: "12345",
+        "name: "Tutoom's room name",
+        "showrecordings": true,
+        "showroominformation": true
+        "isemptyrecordings": false
+    }
+}}
+
+<h3 class="mb-0">{{name}}</h3>
+
+{{#error}}
+    {{#errorcode}}
+        <p class="tutoom-warning">Error: {{errorcode}}. {{errormessage}}</p>
+    {{/errorcode}}
+{{/error}}
+{{^error}}
+    {{#showroominformation}}
+        <div id='tutoom-main-section'>
+            {{>mod_tutoom/main_section}}
+        </div>
+    {{/showroominformation}}
+
+    {{#showrecordings}}
+        {{>mod_tutoom/recordings_section}}
+    {{/showrecordings}}
+
+    {{#js}}
+        require(['mod_tutoom/activity'], function(module) {
+            const id = {{#quote}}{{id}}{{/quote}}
+            const baseUrl = {{#quote}}{{baseurl}}{{/quote}}
+            const isModerator = Boolean({{ismoderator}});
+            const showRecordings = Boolean({{showrecordings}})
+
+            const params = {
+                id,
+                baseUrl,
+                isModerator,
+                showRecordings
+            }
+
+
+
+            module.init(params);
+        });
+    {{/js}}
+{{/error}}
+
+
